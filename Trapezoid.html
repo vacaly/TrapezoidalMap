@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>TrapezoidVisualize</title>
+		<style type="text/css">
+     	.canvas{
+     		background-color: #8BF0F7;
+     		cursor: pointer;
+     		top: 0;
+     		left: 0;
+     	}
+		</style>
+		<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+		<script type="text/javascript">
+		    var jsonObject;
+		    var lock = 0;
+		    var x_;
+		    var y_;
+		    var s = "";
+		    var cnt;
+
+		    window.onload = function() {
+		    	cnt=0;
+		    	s="";
+		        var getFileContent = function (fileInput, callback) {
+		            if (fileInput.files && fileInput.files.length > 0 && fileInput.files[0].size > 0) {
+		                var file = fileInput.files[0];
+		                if (window.FileReader) {
+		                    var reader = new FileReader();
+		                    reader.onloadend = function (evt) {
+		                        if (evt.target.readyState == FileReader.DONE) {
+		                            callback(evt.target.result);
+		                        }
+		                    };
+		                    reader.readAsText(file, 'gbk');
+		                }
+		            }
+		        };
+
+		        document.getElementById('clear').onclick = function () {
+		        	let canvas = document.getElementsByClassName('canvas');
+		        	let ca = canvas[0];
+					let gd = ca.getContext('2d');
+					gd.clearRect(0, 0, ca.width, ca.height);
+					lock = 0;
+					s="";
+					cnt=0;
+					document.getElementsByName('result')[0].innerHTML="";
+		        };
+
+		        document.getElementById('upload').onchange = function () {
+		            getFileContent(this, function (str) {
+		                sites = JSON.parse(str);
+		                let canvas = document.getElementsByClassName('canvas');
+						let ca = canvas[0];
+						let gd = ca.getContext('2d');
+						lock = 1;
+
+						for(var k in sites){
+							gd.beginPath();
+							gd.moveTo(sites[k][0],600-sites[k][1]);
+							gd.lineTo(sites[k][0],600-sites[k][2]);
+							gd.moveTo(sites[k][3],600-sites[k][4]);
+							gd.lineTo(sites[k][3],600-sites[k][5]);
+							gd.setLineDash([3,3]);
+							gd.stroke();
+							gd.beginPath();
+							gd.moveTo(sites[k][0],600-sites[k][1]);
+							gd.lineTo(sites[k][3],600-sites[k][4]);
+							gd.moveTo(sites[k][0],600-sites[k][2]);
+							gd.lineTo(sites[k][3],600-sites[k][5]);
+							gd.fillText(k,sites[k][0]+15,600-(sites[k][1]+sites[k][2])/2);
+							gd.setLineDash([]);
+							gd.stroke();							
+						}
+		            });
+		        };
+
+		        document.getElementById('ca').onmousedown=function (event){
+					x_=event.clientX - ca.offsetTop;
+					y_=event.clientY - ca.offsetLeft;
+					//console.log(x_,y_);
+				};
+
+				document.getElementById('ca').onmouseup=function (event){
+					var x=event.clientX - ca.offsetTop;
+					var y=event.clientY - ca.offsetLeft;
+					//console.log(x,y);
+					if(x==x_)
+						return;
+					if(x<x_){
+						var tmp = x;
+						x = x_
+						x_ = tmp;
+						tmp = y;
+						y = y_;
+						y_ = tmp;
+					}
+					let gd = ca.getContext('2d');
+					gd.beginPath();
+					gd.moveTo(x_,y_);
+					gd.lineTo(x,y);
+					gd.setLineDash([]);
+					gd.stroke();
+					cnt=cnt+1;
+					y = 600 - y;
+					y_ = 600 - y_;
+					s=s+x_.toString()+","+y_.toString()+","+x.toString()+","+y.toString()+",";
+					document.getElementsByName('result')[0].innerHTML=cnt.toString()+":"+s;
+				};
+		    };
+		</script>
+	</head>
+
+	<body>
+		<canvas class="canvas" width="800px" height="600px" id="ca"></canvas>
+		<br>
+		<button id="clear">clear</button>
+		<input type="file" name="upload" id="upload" accept="text/plain"/>
+		<br>
+		<p name="result"></p>
+</body>
+</html>
