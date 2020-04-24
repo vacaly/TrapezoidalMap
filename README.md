@@ -18,3 +18,4 @@ n is the number of points, the rest are sites.
 3. copy the text just below to "Trapezoid.txt"
 4. run "main"
 5. upload "Trapezoid.json" to view the result
+![image](https://github.com/vacaly/TrapezoidalMap/blob/master/web.png)
