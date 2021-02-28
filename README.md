@@ -1,4 +1,5 @@
 # TrapezoidalMap
+计算机图形学——梯形图算法——C++实现
 This [material](https://sites.cs.ucsb.edu/~suri/cs235/Location.pdf) will help you to understand trapezoidal map layout and search structure
 # Build & Run
 to build
